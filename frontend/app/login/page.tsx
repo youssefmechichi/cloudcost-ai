@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { login } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function LoginPage() {
 
     try {
       const data = await login(email, password);
-      localStorage.setItem("token", data.access_token);
+      document.cookie = `token=${data.access_token}; path=/`;
       router.push("/dashboard");
     } catch {
       setError("Invalid login credentials");
@@ -47,6 +48,12 @@ export default function LoginPage() {
         <button className="w-full bg-black text-white p-2 rounded">
           Login
         </button>
+        <p className="text-sm text-gray-700">
+          No account yet?{" "}
+          <Link className="underline" href="/signup">
+            Sign up
+          </Link>
+        </p>
       </form>
     </main>
   );

@@ -17,7 +17,21 @@ export default function DashboardPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    function getTokenFromCookies() {
+  const cookies = document.cookie.split("; ");
+
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+
+    if (name === "token") {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+    const token = getTokenFromCookies();
 
     if (!token) {
       router.push("/login");
@@ -27,13 +41,13 @@ export default function DashboardPage() {
     getMySubscription(token)
       .then(setSubscription)
       .catch(() => {
-        localStorage.removeItem("token");
+        document.cookie = "token=; Max-Age=0; path=/";;
         router.push("/login");
       });
   }, [router]);
 
   function logout() {
-    localStorage.removeItem("token");
+    document.cookie = "token=; Max-Age=0; path=/";;
     router.push("/login");
   }
 
