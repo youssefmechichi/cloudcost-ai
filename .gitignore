@@ -1,0 +1,46 @@
+# dependencies
+node_modules/
+
+# env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# next.js
+.next/
+out/
+
+# nestjs build
+dist/
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# prisma
+backend/generated/
+
+# mac/windows
+.DS_Store
+Thumbs.db
+
+# vscode
+.vscode/
+
+# docker
+*.pid
+
+# coverage
+coverage/
+
+# terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# misc
+tmp/
+temp/
