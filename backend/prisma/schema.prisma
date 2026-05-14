@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,9 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  createdAt   DateTime @default(now())
+
+  users        User[]
+  subscription Subscription?
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  createdAt      DateTime @default(now())
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+}
+
+model Subscription {
+  id             String   @id @default(uuid())
+  plan           String   @default("FREE")
+  status         String   @default("ACTIVE")
+  createdAt      DateTime @default(now())
+
+  organizationId String   @unique
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
