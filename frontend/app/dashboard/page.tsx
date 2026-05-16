@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { getMySubscription } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { DashboardLayout } from "@/components/dashboard-layout";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 type Subscription = {
   organizationId: string;
@@ -13,6 +22,13 @@ type Subscription = {
 };
 
 export default function DashboardPage() {
+    const chartData = [
+    { month: "Jan", cost: 400 },
+    { month: "Feb", cost: 300 },
+    { month: "Mar", cost: 500 },
+    { month: "Apr", cost: 700 },
+    { month: "May", cost: 600 },
+    ];
   const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
 
@@ -42,7 +58,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8 text-black">
+    <DashboardLayout>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">CloudCost AI</h1>
@@ -90,6 +106,27 @@ export default function DashboardPage() {
           Billing data, anomaly detection and AI recommendations will appear here.
         </p>
       </section>
-    </main>
+      <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-md">
+        <h2 className="text-xl font-semibold">
+            Cloud Spending Trend
+        </h2>
+
+        <div className="mt-6 h-80">
+            <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                type="monotone"
+                dataKey="cost"
+                stroke="#000"
+                strokeWidth={3}
+                />
+            </LineChart>
+            </ResponsiveContainer>
+        </div>
+        </section>
+    </DashboardLayout>
   );
 }
