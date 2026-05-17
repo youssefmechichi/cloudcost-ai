@@ -12,7 +12,7 @@ export default function UploadPage() {
         Upload your cloud billing files to analyze costs.
       </p>
 
-      <div className="mt-8 rounded-2xl border border-dashed border-zinc-700 bg-zinc-900 p-10 text-center shadow-md">
+      <div className="mt-8 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50 p-10 text-center shadow-md">
         <Upload className="mx-auto mb-4" size={40} />
 
         <h2 className="text-xl font-semibold">
@@ -23,7 +23,7 @@ export default function UploadPage() {
           Supported formats: CSV, PDF
         </p>
 
-        <button className="mt-6 rounded-lg bg-white px-5 py-2 text-black">
+        <button className="mt-6 rounded-lg bg-indigo-600 px-5 py-2 text-white">
           Choose File
         </button>
       </div>
