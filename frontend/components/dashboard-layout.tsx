@@ -8,10 +8,10 @@ export function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-gray-100 text-black">
+    <div className="flex min-h-screen bg-zinc-950 text-white">
       <Sidebar />
 
-      <main className="flex-1 p-8">
+      <main className="flex-1 overflow-y-auto p-8">
         {children}
       </main>
     </div>
