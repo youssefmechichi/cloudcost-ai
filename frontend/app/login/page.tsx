@@ -1,53 +1,32 @@
-"use client";
+import { DashboardLayout } from "@/components/dashboard-layout";
+import { Upload } from "lucide-react";
 
-import { useState } from "react";
-import { login } from "@/lib/api";
-import { useRouter } from "next/navigation";
-
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("admin@cloudcost.ai");
-  const [password, setPassword] = useState("password123");
-  const [error, setError] = useState("");
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-
-    try {
-      const data = await login(email, password);
-      localStorage.setItem("token", data.access_token);
-      router.push("/dashboard");
-    } catch {
-      setError("Invalid login credentials");
-    }
-  }
-
+export default function UploadPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4 border p-6 rounded-xl">
-        <h1 className="text-2xl font-bold">Login</h1>
+    <DashboardLayout>
+      <h1 className="text-3xl font-bold">
+        Upload Invoices
+      </h1>
 
-        <input
-          className="w-full border p-2 rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
+      <p className="mt-2 text-slate-500">
+        Upload your cloud billing files to analyze costs.
+      </p>
 
-        <input
-          className="w-full border p-2 rounded"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
+      <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
+        <Upload className="mx-auto mb-4 text-slate-600" size={40} />
 
-        {error && <p className="text-red-500">{error}</p>}
+        <h2 className="text-xl font-semibold">
+          Drop your CSV or PDF invoice here
+        </h2>
 
-        <button className="w-full bg-black text-white p-2 rounded">
-          Login
+        <p className="mt-2 text-slate-500">
+          Supported formats: CSV, PDF
+        </p>
+
+        <button className="mt-6 rounded-xl bg-indigo-600 px-5 py-2 text-white transition hover:bg-indigo-700">
+          Choose File
         </button>
-      </form>
-    </main>
+      </div>
+    </DashboardLayout>
   );
 }

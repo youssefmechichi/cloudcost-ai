@@ -81,7 +81,7 @@ export default function DashboardPage() {
   if (!subscription) {
     return (
       <DashboardLayout>
-        <p>Loading dashboard...</p>
+        <p className="text-slate-500">Loading dashboard...</p>
       </DashboardLayout>
     );
   }
@@ -90,55 +90,42 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">CloudCost AI</h1>
-          <p className="text-zinc-400">
-            FinOps SaaS Dashboard
-          </p>
+          <h1 className="text-3xl font-bold text-slate-950">
+            CloudCost AI
+          </h1>
+          <p className="text-slate-500">FinOps SaaS Dashboard</p>
         </div>
 
         <button
           onClick={logout}
-          className="rounded-lg bg-white px-4 py-2 text-black"
+          className="rounded-xl bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700"
         >
           Logout
         </button>
       </div>
 
       <section className="mt-8 grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">
-            Organization
-          </p>
-
-          <h2 className="mt-2 text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Organization</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950">
             {subscription.organizationName}
           </h2>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">
-            Current Plan
-          </p>
-
-          <h2 className="mt-2 text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Current Plan</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950">
             {subscription.plan}
           </h2>
-
-          <p className="text-sm text-zinc-500">
-            {subscription.status}
-          </p>
+          <p className="text-sm text-slate-500">{subscription.status}</p>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">
-            AI Advisor Access
-          </p>
-
-          <h2 className="mt-2 text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">AI Advisor Access</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950">
             {subscription.canUseAI ? "Enabled" : "Disabled"}
           </h2>
-
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-slate-500">
             {subscription.canUseAI
               ? "AI recommendations enabled."
               : "Upgrade to PRO to unlock AI insights."}
@@ -147,47 +134,47 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-8 grid gap-4 md:grid-cols-4">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">Total Spend</p>
-          <h2 className="mt-2 text-2xl font-bold">$780</h2>
-          <p className="text-sm text-red-400">+18% vs last month</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Total Spend</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">$780</h2>
+          <p className="text-sm text-red-500">+18% vs last month</p>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">Anomalies</p>
-          <h2 className="mt-2 text-2xl font-bold">2</h2>
-          <p className="text-sm text-orange-400">Requires review</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Anomalies</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">2</h2>
+          <p className="text-sm text-orange-500">Requires review</p>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">Potential Savings</p>
-          <h2 className="mt-2 text-2xl font-bold">$126</h2>
-          <p className="text-sm text-green-400">Estimated monthly</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Potential Savings</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">$126</h2>
+          <p className="text-sm text-green-600">Estimated monthly</p>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <p className="text-sm text-zinc-400">Forecast</p>
-          <h2 className="mt-2 text-2xl font-bold">$910</h2>
-          <p className="text-sm text-zinc-400">Projected next month</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Forecast</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">$910</h2>
+          <p className="text-sm text-slate-500">Projected next month</p>
         </div>
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <h2 className="text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
             Monthly Cost Trend
           </h2>
 
           <div className="mt-6 h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
-                <XAxis dataKey="month" stroke="#fff" />
-                <YAxis stroke="#fff" />
+                <XAxis dataKey="month" stroke="#64748b" />
+                <YAxis stroke="#64748b" />
                 <Tooltip />
                 <Line
                   type="monotone"
                   dataKey="cost"
-                  stroke="#fff"
+                  stroke="#4f46e5"
                   strokeWidth={3}
                 />
               </LineChart>
@@ -195,18 +182,18 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-md">
-          <h2 className="text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
             Cost by Service
           </h2>
 
           <div className="mt-6 h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={serviceData}>
-                <XAxis dataKey="service" stroke="#fff" />
-                <YAxis stroke="#fff" />
+                <XAxis dataKey="service" stroke="#64748b" />
+                <YAxis stroke="#64748b" />
                 <Tooltip />
-                <Bar dataKey="cost" fill="#fff" />
+                <Bar dataKey="cost" fill="#4f46e5" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -214,30 +201,32 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-orange-900 bg-orange-950 p-6 shadow-md">
-          <h2 className="text-xl font-semibold">
+        <div className="rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
             Detected Anomaly
           </h2>
 
-          <p className="mt-3 text-zinc-300">
-            Cloud SQL costs increased by 42% in March compared to the previous average.
+          <p className="mt-3 text-slate-700">
+            Cloud SQL costs increased by 42% in March compared to the previous
+            average.
           </p>
 
-          <p className="mt-2 text-sm text-orange-400">
+          <p className="mt-2 text-sm text-orange-600">
             Suggested action: review database storage growth and query volume.
           </p>
         </div>
 
-        <div className="rounded-2xl border border-blue-900 bg-blue-950 p-6 shadow-md">
-          <h2 className="text-xl font-semibold">
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
             AI Recommendation Preview
           </h2>
 
-          <p className="mt-3 text-zinc-300">
-            You may save approximately $126/month by resizing underutilized compute workloads.
+          <p className="mt-3 text-slate-700">
+            You may save approximately $126/month by resizing underutilized
+            compute workloads.
           </p>
 
-          <p className="mt-2 text-sm text-blue-400">
+          <p className="mt-2 text-sm text-indigo-600">
             Full AI recommendations available on the PRO plan.
           </p>
         </div>

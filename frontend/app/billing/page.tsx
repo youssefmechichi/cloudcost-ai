@@ -31,13 +31,13 @@ export default function BillingPage() {
         Billing History
       </h1>
 
-      <p className="mt-2 text-zinc-400">
+      <p className="mt-2 text-slate-500">
         Review uploaded invoices and billing analysis.
       </p>
 
-      <div className="mt-8 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 shadow-md">
+      <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-left">
-          <thead className="bg-zinc-800">
+          <thead className="bg-slate-100">
             <tr>
               <th className="p-4">Invoice</th>
               <th className="p-4">Provider</th>
@@ -49,16 +49,17 @@ export default function BillingPage() {
 
           <tbody>
             {invoices.map((invoice) => (
-              <tr key={invoice.id} className="border-t border-zinc-800">
+              <tr
+                key={invoice.id}
+                className="border-t border-slate-200"
+              >
                 <td className="p-4">{invoice.id}</td>
                 <td className="p-4">{invoice.provider}</td>
                 <td className="p-4">{invoice.month}</td>
                 <td className="p-4 font-semibold">
                   {invoice.amount}
                 </td>
-                <td className="p-4">
-                  {invoice.status}
-                </td>
+                <td className="p-4">{invoice.status}</td>
               </tr>
             ))}
           </tbody>
