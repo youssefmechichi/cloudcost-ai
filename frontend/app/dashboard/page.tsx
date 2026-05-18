@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getMySubscription } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
+import { getMySubscription } from "@/lib/api";
+import { getBillingSummary } from "@/lib/api";
+
 import {
   LineChart,
   Line,
@@ -11,6 +13,8 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 
 type Subscription = {
@@ -21,112 +25,223 @@ type Subscription = {
   canUseAI: boolean;
 };
 
+const chartData = [
+  { month: "Jan", cost: 400 },
+  { month: "Feb", cost: 300 },
+  { month: "Mar", cost: 500 },
+  { month: "Apr", cost: 700 },
+  { month: "May", cost: 600 },
+];
+
+
+function getTokenFromCookies() {
+  const cookies = document.cookie.split("; ");
+
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+
+    if (name === "token") {
+      return value;
+    }
+  }
+
+  return null;
+}
+
 export default function DashboardPage() {
-    const chartData = [
-    { month: "Jan", cost: 400 },
-    { month: "Feb", cost: 300 },
-    { month: "Mar", cost: 500 },
-    { month: "Apr", cost: 700 },
-    { month: "May", cost: 600 },
-    ];
+  const [billingSummary, setBillingSummary] = useState<any>(null);
+  const serviceData = billingSummary?.services || [];
+
   const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = getTokenFromCookies();
 
     if (!token) {
       router.push("/login");
       return;
     }
 
-    getMySubscription(token)
-      .then(setSubscription)
+    Promise.all([
+      getMySubscription(token),
+      getBillingSummary(token),
+    ])
+      .then(([subscriptionData, summaryData]) => {
+        setSubscription(subscriptionData);
+        setBillingSummary(summaryData);
+      })
       .catch(() => {
-        localStorage.removeItem("token");
+        document.cookie = "token=; Max-Age=0; path=/";
         router.push("/login");
       });
   }, [router]);
 
   function logout() {
-    localStorage.removeItem("token");
+    document.cookie = "token=; Max-Age=0; path=/";
     router.push("/login");
   }
 
-  if (!subscription) {
-    return <main className="p-8">Loading dashboard...</main>;
+  if (!subscription || !billingSummary) {
+    return (
+      <DashboardLayout>
+        <p className="text-slate-500">Loading dashboard...</p>
+      </DashboardLayout>
+    );
   }
+
+  const chartData = serviceData.map((service: any) => ({
+  month: service.service,
+  cost: service.cost,
+  }));
 
   return (
     <DashboardLayout>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">CloudCost AI</h1>
-          <p className="text-gray-800">FinOps SaaS Dashboard</p>
+          <h1 className="text-3xl font-bold text-slate-950">
+            CloudCost AI
+          </h1>
+          <p className="text-slate-500">FinOps SaaS Dashboard</p>
         </div>
 
         <button
           onClick={logout}
-          className="rounded-lg bg-black px-4 py-2 text-white"
+          className="rounded-xl bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700"
         >
           Logout
         </button>
       </div>
 
       <section className="mt-8 grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-700">Organization</p>
-          <h2 className="mt-2 text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Organization</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950">
             {subscription.organizationName}
           </h2>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-700">Current Plan</p>
-          <h2 className="mt-2 text-xl font-semibold">{subscription.plan}</h2>
-          <p className="text-sm text-gray-700">{subscription.status}</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Current Plan</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950">
+            {subscription.plan}
+          </h2>
+          <p className="text-sm text-slate-500">{subscription.status}</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-700">AI Advisor Access</p>
-          <h2 className="mt-2 text-xl font-semibold">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">AI Advisor Access</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950">
             {subscription.canUseAI ? "Enabled" : "Disabled"}
           </h2>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-slate-500">
             {subscription.canUseAI
-              ? "You can use AI cost recommendations."
+              ? "AI recommendations enabled."
               : "Upgrade to PRO to unlock AI insights."}
           </p>
         </div>
       </section>
 
-      <section className="mt-8 rounded-xl border bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold">Cost Overview</h2>
-        <p className="mt-2 text-gray-800">
-          Billing data, anomaly detection and AI recommendations will appear here.
-        </p>
-      </section>
-      <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-md">
-        <h2 className="text-xl font-semibold">
-            Cloud Spending Trend
-        </h2>
+      <section className="mt-8 grid gap-4 md:grid-cols-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Total Spend</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">
+            ${billingSummary?.totalSpend.toFixed(2)}
+          </h2>
+          <p className="text-sm text-red-500">+18% vs last month</p>
+        </div>
 
-        <div className="mt-6 h-80">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Anomalies</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">2</h2>
+          <p className="text-sm text-orange-500">Requires review</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Potential Savings</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">$126</h2>
+          <p className="text-sm text-green-600">Estimated monthly</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-slate-500">Forecast</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">$910</h2>
+          <p className="text-sm text-slate-500">Projected next month</p>
+        </div>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
+            Monthly Cost Trend
+          </h2>
+
+          <div className="mt-6 h-72">
             <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-                <XAxis dataKey="month" />
-                <YAxis />
+              <LineChart data={chartData}>
+                <XAxis dataKey="month" stroke="#64748b" />
+                <YAxis stroke="#64748b" />
                 <Tooltip />
                 <Line
-                type="monotone"
-                dataKey="cost"
-                stroke="#000"
-                strokeWidth={3}
+                  type="monotone"
+                  dataKey="cost"
+                  stroke="#4f46e5"
+                  strokeWidth={3}
                 />
-            </LineChart>
+              </LineChart>
             </ResponsiveContainer>
+          </div>
         </div>
-        </section>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
+            Cost by Service
+          </h2>
+
+          <div className="mt-6 h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={serviceData}>
+                <XAxis dataKey="service" stroke="#64748b" />
+                <YAxis stroke="#64748b" />
+                <Tooltip />
+                <Bar dataKey="cost" fill="#4f46e5" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
+            Detected Anomaly
+          </h2>
+
+          <p className="mt-3 text-slate-700">
+            Cloud SQL costs increased by 42% in March compared to the previous
+            average.
+          </p>
+
+          <p className="mt-2 text-sm text-orange-600">
+            Suggested action: review database storage growth and query volume.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">
+            AI Recommendation Preview
+          </h2>
+
+          <p className="mt-3 text-slate-700">
+            You may save approximately $126/month by resizing underutilized
+            compute workloads.
+          </p>
+
+          <p className="mt-2 text-sm text-indigo-600">
+            Full AI recommendations available on the PRO plan.
+          </p>
+        </div>
+      </section>
     </DashboardLayout>
   );
 }

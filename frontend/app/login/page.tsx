@@ -15,7 +15,7 @@ export default function LoginPage() {
 
     try {
       const data = await login(email, password);
-      localStorage.setItem("token", data.access_token);
+      document.cookie = `token=${data.access_token}; path=/`;
       router.push("/dashboard");
     } catch {
       setError("Invalid login credentials");
