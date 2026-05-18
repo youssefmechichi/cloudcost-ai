@@ -82,3 +82,24 @@ export async function getBillingRecords(token: string) {
 
   return response.json();
 }
+
+export async function uploadBillingCsv(token: string, file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("http://localhost:3000/billing/upload", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to upload billing CSV");
+  }
+
+  return data;
+}
