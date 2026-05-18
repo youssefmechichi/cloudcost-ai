@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   Req,
   UploadedFile,
@@ -20,4 +21,15 @@ export class BillingController {
   uploadCsv(@Req() req, @UploadedFile() file: Express.Multer.File) {
     return this.billingService.uploadCsv(req.user.userId, file);
   }
+   @UseGuards(AuthGuard('jwt'))
+   @Get('records')
+   getRecords(@Req() req) {
+     return this.billingService.getRecords(req.user.userId);
+   }
+
+   @UseGuards(AuthGuard('jwt'))
+   @Get('summary')
+   getSummary(@Req() req) {
+     return this.billingService.getSummary(req.user.userId);
+   }
 }

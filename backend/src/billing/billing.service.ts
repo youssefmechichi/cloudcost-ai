@@ -57,4 +57,49 @@ export class BillingService {
         .on('error', reject);
     });
   }
+
+  async getRecords(userId: string) {
+  const user = await this.prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user?.organizationId) {
+    throw new BadRequestException('User has no organization');
+  }
+
+  return this.prisma.billingRecord.findMany({
+    where: {
+      organizationId: user.organizationId,
+    },
+    orderBy: {
+      usageDate: 'asc',
+      },
+    });
+  }
+
+  async getSummary(userId: string) {
+    const records = await this.getRecords(userId);
+
+    const totalSpend = records.reduce((sum, record) => sum + record.cost, 0);
+
+    const costByService = records.reduce(
+      (acc, record) => {
+        acc[record.service] = (acc[record.service] || 0) + record.cost;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const services = Object.entries(costByService).map(([service, cost]) => ({
+      service,
+      cost,
+    }));
+
+    return {
+      totalSpend,
+      recordCount: records.length,
+      currency: records[0]?.currency || 'USD',
+      services,
+    };
+  }
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { getMySubscription } from "@/lib/api";
+import { getBillingSummary } from "@/lib/api";
 
 import {
   LineChart,
@@ -32,12 +33,6 @@ const chartData = [
   { month: "May", cost: 600 },
 ];
 
-const serviceData = [
-  { service: "Compute", cost: 320 },
-  { service: "Cloud SQL", cost: 210 },
-  { service: "Storage", cost: 90 },
-  { service: "BigQuery", cost: 160 },
-];
 
 function getTokenFromCookies() {
   const cookies = document.cookie.split("; ");
@@ -54,6 +49,9 @@ function getTokenFromCookies() {
 }
 
 export default function DashboardPage() {
+  const [billingSummary, setBillingSummary] = useState<any>(null);
+  const serviceData = billingSummary?.services || [];
+
   const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
 
@@ -65,8 +63,14 @@ export default function DashboardPage() {
       return;
     }
 
-    getMySubscription(token)
-      .then(setSubscription)
+    Promise.all([
+      getMySubscription(token),
+      getBillingSummary(token),
+    ])
+      .then(([subscriptionData, summaryData]) => {
+        setSubscription(subscriptionData);
+        setBillingSummary(summaryData);
+      })
       .catch(() => {
         document.cookie = "token=; Max-Age=0; path=/";
         router.push("/login");
@@ -78,13 +82,18 @@ export default function DashboardPage() {
     router.push("/login");
   }
 
-  if (!subscription) {
+  if (!subscription || !billingSummary) {
     return (
       <DashboardLayout>
         <p className="text-slate-500">Loading dashboard...</p>
       </DashboardLayout>
     );
   }
+
+  const chartData = serviceData.map((service: any) => ({
+  month: service.service,
+  cost: service.cost,
+  }));
 
   return (
     <DashboardLayout>
@@ -136,7 +145,9 @@ export default function DashboardPage() {
       <section className="mt-8 grid gap-4 md:grid-cols-4">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-slate-500">Total Spend</p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">$780</h2>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">
+            ${billingSummary?.totalSpend.toFixed(2)}
+          </h2>
           <p className="text-sm text-red-500">+18% vs last month</p>
         </div>
 
