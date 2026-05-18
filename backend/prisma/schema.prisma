@@ -14,6 +14,7 @@ model Organization {
 
   users        User[]
   subscription Subscription?
+  billingRecords BillingRecord[]
 }
 
 model User {
@@ -33,5 +34,17 @@ model Subscription {
   createdAt      DateTime @default(now())
 
   organizationId String   @unique
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model BillingRecord {
+  id          String   @id @default(uuid())
+  service     String
+  cost        Float
+  currency    String
+  usageDate   DateTime
+  createdAt   DateTime @default(now())
+
+  organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
 }
