@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
-import { getMySubscription } from "@/lib/api";
-import { getBillingSummary } from "@/lib/api";
+import {
+  getBillingSummary,
+  getMonthlyTrends,
+  getMySubscription,
+} from "@/lib/api";
 
 import {
   LineChart,
@@ -54,6 +57,7 @@ export default function DashboardPage() {
 
   const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [monthlyTrends, setMonthlyTrends] = useState<any[]>([]);
 
   useEffect(() => {
     const token = getTokenFromCookies();
@@ -63,18 +67,20 @@ export default function DashboardPage() {
       return;
     }
 
-    Promise.all([
-      getMySubscription(token),
-      getBillingSummary(token),
-    ])
-      .then(([subscriptionData, summaryData]) => {
-        setSubscription(subscriptionData);
-        setBillingSummary(summaryData);
-      })
-      .catch(() => {
-        document.cookie = "token=; Max-Age=0; path=/";
-        router.push("/login");
-      });
+      Promise.all([
+    getMySubscription(token),
+    getBillingSummary(token),
+    getMonthlyTrends(token),
+  ])
+    .then(([subscriptionData, summaryData, trendsData]) => {
+      setSubscription(subscriptionData);
+      setBillingSummary(summaryData);
+      setMonthlyTrends(trendsData);
+    })
+    .catch(() => {
+      document.cookie = "token=; Max-Age=0; path=/";
+      router.push("/login");
+    });
   }, [router]);
 
   function logout() {
@@ -90,10 +96,7 @@ export default function DashboardPage() {
     );
   }
 
-  const chartData = serviceData.map((service: any) => ({
-  month: service.service,
-  cost: service.cost,
-  }));
+  const chartData = monthlyTrends;
 
   return (
     <DashboardLayout>

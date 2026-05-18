@@ -103,3 +103,17 @@ export async function uploadBillingCsv(token: string, file: File) {
 
   return data;
 }
+
+export async function getMonthlyTrends(token: string) {
+  const response = await fetch("http://localhost:3000/billing/monthly-trends", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch monthly trends");
+  }
+
+  return response.json();
+}

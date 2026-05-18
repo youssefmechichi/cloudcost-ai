@@ -102,4 +102,28 @@ export class BillingService {
       services,
     };
   }
+
+  async getMonthlyTrends(userId: string) {
+  const records = await this.getRecords(userId);
+
+  const monthlyTotals: Record<string, number> = {};
+
+  for (const record of records) {
+    const date = new Date(record.usageDate);
+
+    const month = date.toLocaleString("en-US", {
+      month: "short",
+    });
+
+    monthlyTotals[month] =
+      (monthlyTotals[month] || 0) + record.cost;
+  }
+
+  return Object.entries(monthlyTotals).map(
+    ([month, cost]) => ({
+        month,
+        cost,
+      }),
+    );
+  }
 }

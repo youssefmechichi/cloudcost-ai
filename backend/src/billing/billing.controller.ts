@@ -32,4 +32,12 @@ export class BillingController {
    getSummary(@Req() req) {
      return this.billingService.getSummary(req.user.userId);
    }
+
+   @UseGuards(AuthGuard('jwt'))
+   @Get('monthly-trends')
+   getMonthlyTrends(@Req() req) {
+     return this.billingService.getMonthlyTrends(
+       req.user.userId,
+     );
+   }
 }
