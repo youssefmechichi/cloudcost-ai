@@ -159,3 +159,26 @@ export async function getBillingInsights(token: string) {
 
   return response.json();
 }
+
+export async function askAiAdvisor(
+  token: string,
+  message: string,
+) {
+  const response = await fetch(
+    "http://localhost:3000/billing/ai-chat",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ message }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("AI advisor request failed");
+  }
+
+  return response.json();
+}

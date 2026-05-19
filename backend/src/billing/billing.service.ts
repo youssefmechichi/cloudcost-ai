@@ -256,4 +256,41 @@ async getInsights(userId: string) {
     monthlyTrends,
   };
 }
+
+async generateAiResponse(
+  userId: string,
+  message: string,
+) {
+  const insights = await this.getInsights(userId);
+
+  const summary = insights.summary;
+  const anomalies = insights.anomalies;
+  const recommendations = insights.recommendations || [];;
+  const forecast = insights.forecast;
+
+  let response = '';
+
+  if (
+    message.toLowerCase().includes('cost') ||
+    message.toLowerCase().includes('spend')
+  ) {
+    response += `Your current total cloud spend is ${summary.totalSpend.toFixed(2)} ${summary.currency}. `;
+  }
+
+  if (anomalies.length > 0) {
+    response += `${anomalies.length} anomaly/anomalies were detected in your billing records. `;
+  }
+
+  if (recommendations.length > 0) {
+    response += `Top recommendation: ${recommendations[0].title}. `;
+  }
+
+  response += `Projected next month forecast is ${forecast.forecast} USD.`;
+
+  return {
+    message,
+    response,
+    generatedAt: new Date(),
+  };
+}
 }

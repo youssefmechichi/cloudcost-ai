@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -63,5 +64,17 @@ export class BillingController {
   @Get('insights')
   getInsights(@Req() req) {
     return this.billingService.getInsights(req.user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('ai-chat')
+  async aiChat(
+    @Req() req,
+    @Body('message') message: string,
+  ) {
+    return this.billingService.generateAiResponse(
+      req.user.userId,
+      message,
+    );
   }
 }

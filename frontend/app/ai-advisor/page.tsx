@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Bot } from "lucide-react";
-import { getBillingInsights } from "@/lib/api";
+import {
+  askAiAdvisor,
+  getBillingInsights,
+} from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 function getTokenFromCookies() {
@@ -43,6 +46,34 @@ export default function AiAdvisorPage() {
   const recommendations = insights?.recommendations || [];
   const anomalies = insights?.anomalies || [];
   const forecast = insights?.forecast;
+  const [question, setQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleAskAdvisor() {
+  const token = getTokenFromCookies();
+
+  if (!token || !question.trim()) {
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const data = await askAiAdvisor(
+      token,
+      question,
+    );
+
+    setAiResponse(data.response);
+  } catch {
+    setAiResponse(
+      "Failed to generate AI response.",
+    );
+  } finally {
+    setLoading(false);
+  }
+}
 
   return (
     <DashboardLayout>
@@ -51,7 +82,43 @@ export default function AiAdvisorPage() {
       <p className="mt-2 text-slate-500">
         Review intelligent cost insights generated from your billing data.
       </p>
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="text-xl font-semibold">
+          Ask AI Advisor
+        </h2>
 
+        <p className="mt-2 text-slate-500">
+          Ask questions about your cloud costs,
+          anomalies, or optimization opportunities.
+        </p>
+
+        <div className="mt-4 flex gap-3">
+          <input
+            value={question}
+            onChange={(e) =>
+              setQuestion(e.target.value)
+            }
+            placeholder="Why are my cloud costs increasing?"
+            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500"
+          />
+
+          <button
+            onClick={handleAskAdvisor}
+            disabled={loading}
+            className="rounded-xl bg-indigo-600 px-5 py-3 text-white transition hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {loading ? "Thinking..." : "Ask"}
+          </button>
+        </div>
+
+        {aiResponse && (
+          <div className="mt-6 rounded-xl bg-indigo-50 p-4">
+            <p className="text-slate-800">
+              {aiResponse}
+            </p>
+          </div>
+        )}
+      </div>
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-start gap-3 rounded-xl bg-indigo-50 p-4">
           <Bot className="text-indigo-600" />
