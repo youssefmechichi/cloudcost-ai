@@ -194,4 +194,66 @@ export class BillingService {
 }
 
   }
+
+  async getForecast(userId: string) {
+  const monthlyTrends = await this.getMonthlyTrends(userId);
+
+  if (monthlyTrends.length === 0) {
+    return {
+      forecast: 0,
+      currency: 'USD',
+      confidence: 'LOW',
+      reason: 'No billing data available yet.',
+    };
+  }
+
+  const total = monthlyTrends.reduce(
+    (sum, month) => sum + month.cost,
+    0,
+  );
+
+  const averageMonthlySpend = total / monthlyTrends.length;
+
+  const latestMonthSpend =
+    monthlyTrends[monthlyTrends.length - 1].cost;
+
+  const forecast =
+    latestMonthSpend > averageMonthlySpend
+      ? latestMonthSpend * 1.1
+      : averageMonthlySpend;
+
+  return {
+    forecast: Math.round(forecast),
+    confidence: monthlyTrends.length >= 3 ? 'MEDIUM' : 'LOW',
+    reason:
+      monthlyTrends.length >= 3
+        ? 'Forecast based on multi-month billing trend.'
+        : 'Forecast based on limited billing history.',
+  };
+}
+
+async getInsights(userId: string) {
+  const [
+    summary,
+    anomalies,
+    recommendations,
+    forecast,
+    monthlyTrends,
+  ] = await Promise.all([
+    this.getSummary(userId),
+    this.getAnomalies(userId),
+    this.getRecommendations(userId),
+    this.getForecast(userId),
+    this.getMonthlyTrends(userId),
+  ]);
+
+  return {
+    generatedAt: new Date(),
+    summary,
+    anomalies,
+    recommendations,
+    forecast,
+    monthlyTrends,
+  };
+}
 }

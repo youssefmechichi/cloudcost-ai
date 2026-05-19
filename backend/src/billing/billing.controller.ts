@@ -52,4 +52,16 @@ export class BillingController {
    getRecommendations(@Req() req) {
     return this.billingService.getRecommendations(req.user.userId);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('forecast')
+  getForecast(@Req() req) {
+    return this.billingService.getForecast(req.user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('insights')
+  getInsights(@Req() req) {
+    return this.billingService.getInsights(req.user.userId);
+  }
 }

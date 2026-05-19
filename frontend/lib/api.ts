@@ -145,3 +145,17 @@ export async function getBillingRecommendations(token: string) {
 
   return response.json();
 }
+
+export async function getBillingInsights(token: string) {
+  const response = await fetch("http://localhost:3000/billing/insights", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch billing insights");
+  }
+
+  return response.json();
+}
