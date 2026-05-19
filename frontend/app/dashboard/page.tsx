@@ -4,11 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import {
-  getBillingSummary,
-  getMonthlyTrends,
-  getBillingAnomalies,
-  getBillingRecommendations,
   getMySubscription,
+  getBillingInsights,
 } from "@/lib/api";
 
 import {
@@ -54,14 +51,10 @@ function getTokenFromCookies() {
 }
 
 export default function DashboardPage() {
-  const [billingSummary, setBillingSummary] = useState<any>(null);
-  const serviceData = billingSummary?.services || [];
-
   const router = useRouter();
+
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [monthlyTrends, setMonthlyTrends] = useState<any[]>([]);
-  const [anomalies, setAnomalies] = useState<any[]>([]);
-  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [insights, setInsights] = useState<any>(null);
 
   useEffect(() => {
     const token = getTokenFromCookies();
@@ -71,24 +64,18 @@ export default function DashboardPage() {
       return;
     }
 
-      Promise.all([
-    getMySubscription(token),
-    getBillingSummary(token),
-    getMonthlyTrends(token),
-    getBillingAnomalies(token),
-    getBillingRecommendations(token),
-  ])
-    .then(([subscriptionData, summaryData, trendsData, anomalyData, recommendationData]) => {
-      setSubscription(subscriptionData);
-      setBillingSummary(summaryData);
-      setMonthlyTrends(trendsData);
-      setAnomalies(anomalyData);
-      setRecommendations(recommendationData);
-    })
-    .catch(() => {
-      document.cookie = "token=; Max-Age=0; path=/";
-      router.push("/login");
-    });
+    Promise.all([
+      getMySubscription(token),
+      getBillingInsights(token),
+    ])
+      .then(([subscriptionData, insightsData]) => {
+        setSubscription(subscriptionData);
+        setInsights(insightsData);
+      })
+      .catch(() => {
+        document.cookie = "token=; Max-Age=0; path=/";
+        router.push("/login");
+      });
   }, [router]);
 
   function logout() {
@@ -96,7 +83,7 @@ export default function DashboardPage() {
     router.push("/login");
   }
 
-  if (!subscription || !billingSummary) {
+  if (!subscription || !insights) {
     return (
       <DashboardLayout>
         <p className="text-slate-500">Loading dashboard...</p>
@@ -104,7 +91,15 @@ export default function DashboardPage() {
     );
   }
 
+  const billingSummary = insights.summary;
+  const monthlyTrends = insights.monthlyTrends || [];
+  const anomalies = insights.anomalies || [];
+  const recommendations = insights.recommendations || [];
+  const forecast = insights.forecast;
+
+  const serviceData = billingSummary?.services || [];
   const chartData = monthlyTrends;
+
 
   return (
     <DashboardLayout>
@@ -170,13 +165,20 @@ export default function DashboardPage() {
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-slate-500">Potential Savings</p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">$126</h2>
-          <p className="text-sm text-green-600">Estimated monthly</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">
+          $
+          {recommendations
+            .reduce((sum: number, rec: any) => sum + rec.estimatedSavings, 0)
+            .toFixed(0)}
+        </h2>
+          <p className="text-sm text-green-600">
+          Based on {recommendations.length} recommendation(s)
+        </p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-slate-500">Forecast</p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">$910</h2>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">${forecast.forecast}</h2>
           <p className="text-sm text-slate-500">Projected next month</p>
         </div>
       </section>
