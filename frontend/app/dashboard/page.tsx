@@ -7,6 +7,7 @@ import {
   getBillingSummary,
   getMonthlyTrends,
   getMySubscription,
+  getBillingAnomalies,
 } from "@/lib/api";
 
 import {
@@ -58,6 +59,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [monthlyTrends, setMonthlyTrends] = useState<any[]>([]);
+  const [anomalies, setAnomalies] = useState<any[]>([]);
 
   useEffect(() => {
     const token = getTokenFromCookies();
@@ -71,11 +73,13 @@ export default function DashboardPage() {
     getMySubscription(token),
     getBillingSummary(token),
     getMonthlyTrends(token),
+    getBillingAnomalies(token),
   ])
-    .then(([subscriptionData, summaryData, trendsData]) => {
+    .then(([subscriptionData, summaryData, trendsData, anomalyData]) => {
       setSubscription(subscriptionData);
       setBillingSummary(summaryData);
       setMonthlyTrends(trendsData);
+      setAnomalies(anomalyData);
     })
     .catch(() => {
       document.cookie = "token=; Max-Age=0; path=/";
@@ -156,7 +160,7 @@ export default function DashboardPage() {
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-slate-500">Anomalies</p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">2</h2>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{anomalies.length}</h2>
           <p className="text-sm text-orange-500">Requires review</p>
         </div>
 
@@ -220,10 +224,22 @@ export default function DashboardPage() {
             Detected Anomaly
           </h2>
 
+          {anomalies.length > 0 ? (
+          <>
+            <p className="mt-3 text-slate-700">
+              {anomalies[0].service} generated an unusual cost of{" "}
+              {anomalies[0].cost} {anomalies[0].currency}.
+            </p>
+
+            <p className="mt-2 text-sm text-orange-600">
+              {anomalies[0].reason}
+            </p>
+          </>
+        ) : (
           <p className="mt-3 text-slate-700">
-            Cloud SQL costs increased by 42% in March compared to the previous
-            average.
+            No abnormal spending detected in your current billing records.
           </p>
+        )}
 
           <p className="mt-2 text-sm text-orange-600">
             Suggested action: review database storage growth and query volume.

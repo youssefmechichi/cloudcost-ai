@@ -40,4 +40,10 @@ export class BillingController {
        req.user.userId,
      );
    }
+
+   @UseGuards(AuthGuard('jwt'))
+   @Get('anomalies')
+   getAnomalies(@Req() req) {
+     return this.billingService.getAnomalies(req.user.userId);
+   }
 }

@@ -117,3 +117,17 @@ export async function getMonthlyTrends(token: string) {
 
   return response.json();
 }
+
+export async function getBillingAnomalies(token: string) {
+  const response = await fetch("http://localhost:3000/billing/anomalies", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch billing anomalies");
+  }
+
+  return response.json();
+}

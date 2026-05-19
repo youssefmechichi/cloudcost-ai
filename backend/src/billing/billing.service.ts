@@ -126,4 +126,27 @@ export class BillingService {
       }),
     );
   }
+
+  async getAnomalies(userId: string) {
+  const records = await this.getRecords(userId);
+
+  if (records.length === 0) {
+    return [];
+  }
+
+  const totalSpend = records.reduce((sum, record) => sum + record.cost, 0);
+  const averageSpend = totalSpend / records.length;
+
+  return records
+    .filter((record) => record.cost > averageSpend * 1.5)
+    .map((record) => ({
+      id: record.id,
+      service: record.service,
+      cost: record.cost,
+      currency: record.currency,
+      usageDate: record.usageDate,
+      reason: `${record.service} cost is more than 50% above the average billing record.`,
+      severity: record.cost > averageSpend * 2 ? "HIGH" : "MEDIUM",
+    }));
+}
 }
