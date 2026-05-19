@@ -131,3 +131,17 @@ export async function getBillingAnomalies(token: string) {
 
   return response.json();
 }
+
+export async function getBillingRecommendations(token: string) {
+  const response = await fetch("http://localhost:3000/billing/recommendations", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch billing recommendations");
+  }
+
+  return response.json();
+}

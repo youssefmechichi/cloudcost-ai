@@ -148,5 +148,50 @@ export class BillingService {
       reason: `${record.service} cost is more than 50% above the average billing record.`,
       severity: record.cost > averageSpend * 2 ? "HIGH" : "MEDIUM",
     }));
+  }
+
+  async getRecommendations(userId: string) {
+  const summary = await this.getSummary(userId);
+  const anomalies = await this.getAnomalies(userId);
+
+  const recommendations: {
+    title: string;
+    description: string;
+    impact: string;
+    estimatedSavings: number;
+  }[] = [];
+
+  if (summary.totalSpend > 400) {
+    recommendations.push({
+    title: 'Review high monthly cloud spend',
+    description: `Your total spend is ${summary.totalSpend.toFixed(2)} ${summary.currency}. Review high-cost services for optimization.`,
+    impact: 'MEDIUM',
+    estimatedSavings: Math.round(summary.totalSpend * 0.15),
+  });
+
+
+  for (const service of summary.services) {
+    if (service.cost > summary.totalSpend * 0.4) {
+      recommendations.push({
+        title: `Optimize ${service.service}`,
+        description: `${service.service} represents a large share of your cloud bill. Consider rightsizing, autoscaling, or usage review.`,
+        impact: 'HIGH',
+        estimatedSavings: Math.round(service.cost * 0.2),
+      });
+    }
+  }
+
+  if (anomalies.length > 0) {
+    recommendations.push({
+      title: 'Investigate billing anomalies',
+      description: `${anomalies.length} unusual cost pattern(s) were detected. Investigate them before the next billing cycle.`,
+      impact: 'HIGH',
+      estimatedSavings: Math.round(summary.totalSpend * 0.1),
+    });
+  }
+
+  return recommendations;
 }
+
+  }
 }

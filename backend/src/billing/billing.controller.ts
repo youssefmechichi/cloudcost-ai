@@ -46,4 +46,10 @@ export class BillingController {
    getAnomalies(@Req() req) {
      return this.billingService.getAnomalies(req.user.userId);
    }
+   
+   @UseGuards(AuthGuard('jwt'))
+   @Get('recommendations')
+   getRecommendations(@Req() req) {
+    return this.billingService.getRecommendations(req.user.userId);
+  }
 }

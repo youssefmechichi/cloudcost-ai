@@ -6,8 +6,9 @@ import { DashboardLayout } from "@/components/dashboard-layout";
 import {
   getBillingSummary,
   getMonthlyTrends,
-  getMySubscription,
   getBillingAnomalies,
+  getBillingRecommendations,
+  getMySubscription,
 } from "@/lib/api";
 
 import {
@@ -60,6 +61,7 @@ export default function DashboardPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [monthlyTrends, setMonthlyTrends] = useState<any[]>([]);
   const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
 
   useEffect(() => {
     const token = getTokenFromCookies();
@@ -74,12 +76,14 @@ export default function DashboardPage() {
     getBillingSummary(token),
     getMonthlyTrends(token),
     getBillingAnomalies(token),
+    getBillingRecommendations(token),
   ])
-    .then(([subscriptionData, summaryData, trendsData, anomalyData]) => {
+    .then(([subscriptionData, summaryData, trendsData, anomalyData, recommendationData]) => {
       setSubscription(subscriptionData);
       setBillingSummary(summaryData);
       setMonthlyTrends(trendsData);
       setAnomalies(anomalyData);
+      setRecommendations(recommendationData);
     })
     .catch(() => {
       document.cookie = "token=; Max-Age=0; path=/";
@@ -251,10 +255,21 @@ export default function DashboardPage() {
             AI Recommendation Preview
           </h2>
 
-          <p className="mt-3 text-slate-700">
-            You may save approximately $126/month by resizing underutilized
-            compute workloads.
-          </p>
+          {recommendations.length > 0 ? (
+  <>
+              <p className="mt-3 text-slate-700">
+                {recommendations[0].description}
+              </p>
+
+              <p className="mt-2 text-sm text-indigo-600">
+                Estimated savings: ${recommendations[0].estimatedSavings}/month
+              </p>
+            </>
+          ) : (
+            <p className="mt-3 text-slate-700">
+              No optimization recommendation available yet.
+            </p>
+          )}
 
           <p className="mt-2 text-sm text-indigo-600">
             Full AI recommendations available on the PRO plan.
