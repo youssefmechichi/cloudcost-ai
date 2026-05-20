@@ -9,6 +9,21 @@ import {
 } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
+type Recommendation = {
+  title: string;
+  description: string;
+  estimatedSavings: number;
+};
+
+type Insights = {
+  plan: "FREE" | "PRO";
+  recommendations: Recommendation[];
+  anomalies: unknown[];
+  forecast?: {
+    forecast: number;
+  };
+};
+
 function getTokenFromCookies() {
   const cookies = document.cookie.split("; ");
 
@@ -25,7 +40,7 @@ function getTokenFromCookies() {
 
 export default function AiAdvisorPage() {
   const router = useRouter();
-  const [insights, setInsights] = useState<any>(null);
+  const [insights, setInsights] = useState<Insights | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const isPro = insights?.plan === "PRO";
 
@@ -191,7 +206,7 @@ if (!isPro) {
         </div>
 
         <div className="mt-6 space-y-3">
-          {recommendations.map((rec: any, index: number) => (
+          {recommendations.map((rec: Recommendation, index: number) => (
             <div
               key={index}
               className="rounded-xl border border-slate-200 p-4"

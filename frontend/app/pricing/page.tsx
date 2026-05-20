@@ -5,6 +5,11 @@ import { DashboardLayout } from "@/components/dashboard-layout";
 import { createStripeCheckout, getMySubscription, createBillingPortal } from "@/lib/api";
 import { Check } from "lucide-react";
 
+type Subscription = {
+  plan: "FREE" | "PRO";
+  status: "ACTIVE" | "CANCELED";
+};
+
 function getTokenFromCookies() {
   const cookies = document.cookie.split("; ");
 
@@ -19,7 +24,7 @@ function getTokenFromCookies() {
   return null;
 }
 export default function PricingPage() {
-  const [subscription, setSubscription] = useState<any>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
