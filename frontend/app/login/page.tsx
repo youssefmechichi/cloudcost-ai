@@ -47,6 +47,9 @@ export default function LoginPage() {
         <button className="w-full bg-black text-white p-2 rounded">
           Login
         </button>
+        <p className="text-sm text-slate-500">
+        No account yet? <a href="/signup" className="text-indigo-600 underline">Sign up</a>
+      </p>
       </form>
     </main>
   );

@@ -26,6 +26,8 @@ function getTokenFromCookies() {
 export default function AiAdvisorPage() {
   const router = useRouter();
   const [insights, setInsights] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const isPro = insights?.plan === "PRO";
 
   useEffect(() => {
     const token = getTokenFromCookies();
@@ -40,15 +42,18 @@ export default function AiAdvisorPage() {
       .catch(() => {
         document.cookie = "token=; Max-Age=0; path=/";
         router.push("/login");
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, [router]);
+
+  const [question, setQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const recommendations = insights?.recommendations || [];
   const anomalies = insights?.anomalies || [];
   const forecast = insights?.forecast;
-  const [question, setQuestion] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
-  const [loading, setLoading] = useState(false);
+ 
 
   async function handleAskAdvisor() {
   const token = getTokenFromCookies();
@@ -75,6 +80,34 @@ export default function AiAdvisorPage() {
   }
 }
 
+if (isLoading) {
+  return (
+    <DashboardLayout>
+      <p className="text-slate-500">Loading AI Advisor...</p>
+    </DashboardLayout>
+  );
+}
+
+
+if (!isPro) {
+  return (
+    <DashboardLayout>
+      <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+        <h1 className="text-3xl font-bold">AI Advisor is a PRO feature</h1>
+        <p className="mt-3 text-slate-500">
+          Upgrade to unlock AI-generated cloud optimization insights,
+          anomaly detection, and forecasting.
+        </p>
+        <a
+          href="/pricing"
+          className="mt-6 inline-block rounded-xl bg-indigo-600 px-6 py-3 text-white"
+        >
+          Upgrade to Pro
+        </a>
+      </div>
+    </DashboardLayout>
+  );
+}
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold">AI Cost Advisor</h1>

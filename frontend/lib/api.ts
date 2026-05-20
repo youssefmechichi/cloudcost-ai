@@ -182,3 +182,40 @@ export async function askAiAdvisor(
 
   return response.json();
 }
+
+export async function createStripeCheckout(token: string) {
+  const response = await fetch("http://localhost:3000/stripe/checkout", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create Stripe checkout session");
+  }
+
+  return response.json();
+}
+
+export async function createBillingPortal(
+  token: string,
+) {
+  const response = await fetch(
+    "http://localhost:3000/stripe/billing-portal",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to create billing portal session",
+    );
+  }
+
+  return response.json();
+}

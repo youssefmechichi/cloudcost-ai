@@ -6,6 +6,7 @@ import {
   Upload,
   Receipt,
   Bot,
+  CreditCard,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -52,6 +53,13 @@ export function Sidebar() {
         >
           <Bot size={20} />
           AI Advisor
+        </Link>
+        <Link
+          href="/pricing"
+          className="flex items-center gap-3 rounded-xl p-3 text-slate-700 transition hover:bg-slate-100"
+        >
+          <CreditCard size={20} />
+          Pricing & Billing
         </Link>
       </nav>
     </aside>

@@ -35,6 +35,10 @@ model Subscription {
 
   organizationId String   @unique
   organization   Organization @relation(fields: [organizationId], references: [id])
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  stripePriceId        String?
+  currentPeriodEnd     DateTime?
 }
 
 model BillingRecord {

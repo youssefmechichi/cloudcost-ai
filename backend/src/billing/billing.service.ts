@@ -151,6 +151,7 @@ export class BillingService {
   }
 
   async getRecommendations(userId: string) {
+  await this.ensureProAccess(userId);
   const summary = await this.getSummary(userId);
   const anomalies = await this.getAnomalies(userId);
 
@@ -196,6 +197,7 @@ export class BillingService {
   }
 
   async getForecast(userId: string) {
+  await this.ensureProAccess(userId);
   const monthlyTrends = await this.getMonthlyTrends(userId);
 
   if (monthlyTrends.length === 0) {
@@ -256,11 +258,8 @@ async getInsights(userId: string) {
   if (!isPro) {
     return {
       generatedAt: new Date(),
-    summary,
-    anomalies,
-    recommendations,
-    forecast,
-    monthlyTrends,
+      summary,
+      monthlyTrends,
       anomalies: [],
       recommendations: [],
       forecast: {
@@ -276,7 +275,6 @@ async getInsights(userId: string) {
     this.getAnomalies(userId),
     this.getRecommendations(userId),
     this.getForecast(userId),
-    this.getMonthlyTrends(userId),
   ]);
 
   return {
@@ -294,6 +292,7 @@ async generateAiResponse(
   userId: string,
   message: string,
 ) {
+  await this.ensureProAccess(userId);
   const insights = await this.getInsights(userId);
 
   const summary = insights.summary;
@@ -326,4 +325,30 @@ async generateAiResponse(
     generatedAt: new Date(),
   };
 }
+
+private async ensureProAccess(userId: string) {
+  const user = await this.prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      organization: {
+        include: {
+          subscription: true,
+        },
+      },
+    },
+  });
+
+  const subscription = user?.organization?.subscription;
+
+  if (
+    !subscription ||
+    subscription.plan !== "PRO" ||
+    subscription.status !== "ACTIVE"
+  ) {
+    throw new BadRequestException(
+      "This feature requires a PRO subscription.",
+    );
+  }
+}
+
 }

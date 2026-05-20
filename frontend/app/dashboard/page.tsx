@@ -72,10 +72,9 @@ export default function DashboardPage() {
         setSubscription(subscriptionData);
         setInsights(insightsData);
       })
-      .catch(() => {
-        document.cookie = "token=; Max-Age=0; path=/";
-        router.push("/login");
-      });
+      .catch((error) => {
+      console.error("Dashboard load failed:", error);
+    });
   }, [router]);
 
   function logout() {
@@ -92,6 +91,9 @@ export default function DashboardPage() {
   }
 
   const billingSummary = insights.summary;
+  const isPro =
+  subscription.plan === "PRO" &&
+  subscription.status === "ACTIVE";
   const monthlyTrends = insights.monthlyTrends || [];
   const anomalies = insights.anomalies || [];
   const recommendations = insights.recommendations || [];
@@ -108,6 +110,15 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold text-slate-950">
             CloudCost AI
           </h1>
+           {isPro ? (
+            <span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700">
+              PRO
+            </span>
+          ) : (
+            <span className="rounded-full bg-slate-200 px-3 py-1 text-sm font-medium text-slate-700">
+              FREE
+            </span>
+          )}
           <p className="text-slate-500">FinOps SaaS Dashboard</p>
         </div>
 
@@ -157,13 +168,31 @@ export default function DashboardPage() {
           <p className="text-sm text-red-500">+18% vs last month</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className={`relative rounded-2xl border p-6 shadow-sm ${
+            isPro
+              ? "border-slate-200 bg-white"
+              : "border-slate-200 bg-slate-100 opacity-60"
+          }`}>
           <p className="text-sm text-slate-500">Anomalies</p>
           <h2 className="mt-2 text-2xl font-bold text-slate-950">{anomalies.length}</h2>
           <p className="text-sm text-orange-500">Requires review</p>
+          {!isPro && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
+            <a
+              href="/pricing"
+              className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+            >
+              Upgrade to Pro
+            </a>
+          </div>
+        )}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className={`relative rounded-2xl border p-6 shadow-sm ${
+            isPro
+              ? "border-slate-200 bg-white"
+              : "border-slate-200 bg-slate-100 opacity-60"
+          }`}>
           <p className="text-sm text-slate-500">Potential Savings</p>
           <h2 className="mt-2 text-2xl font-bold text-slate-950">
           $
@@ -174,12 +203,35 @@ export default function DashboardPage() {
           <p className="text-sm text-green-600">
           Based on {recommendations.length} recommendation(s)
         </p>
+        {!isPro && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
+            <a
+              href="/pricing"
+              className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+            >
+              Upgrade to Pro
+            </a>
+          </div>
+        )}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className={`relative rounded-2xl border p-6 shadow-sm ${
+            isPro
+              ? "border-slate-200 bg-white"
+              : "border-slate-200 bg-slate-100 opacity-60"
+          }`}>
           <p className="text-sm text-slate-500">Forecast</p>
           <h2 className="mt-2 text-2xl font-bold text-slate-950">${forecast.forecast}</h2>
-          <p className="text-sm text-slate-500">Projected next month</p>
+          {!isPro && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
+            <a
+              href="/pricing"
+              className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+            >
+              Upgrade to Pro
+            </a>
+          </div>
+        )}
         </div>
       </section>
 
@@ -223,7 +275,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
-
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-slate-950">
