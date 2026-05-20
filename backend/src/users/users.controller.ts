@@ -2,6 +2,13 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 
+type AuthenticatedRequest = {
+  user: {
+    userId: string;
+    email: string;
+  };
+};
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -13,7 +20,7 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
-  me(@Req() req) {
+  me(@Req() req: AuthenticatedRequest) {
     return req.user;
   }
 

@@ -16,39 +16,39 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
-        data: {
-            email: dto.email,
-            password: hashedPassword,
-            organization: {
-            create: {
-                name: `${dto.email}'s organization`,
-                subscription: {
-                create: {
-                    plan: 'FREE',
-                    status: 'ACTIVE',
-                },
-                },
+      data: {
+        email: dto.email,
+        password: hashedPassword,
+        organization: {
+          create: {
+            name: `${dto.email}'s organization`,
+            subscription: {
+              create: {
+                plan: 'FREE',
+                status: 'ACTIVE',
+              },
             },
-            },
+          },
         },
-        include: {
-            organization: {
-            include: {
-                subscription: true,
-            },
-            },
+      },
+      include: {
+        organization: {
+          include: {
+            subscription: true,
+          },
         },
-        });
+      },
+    });
 
     return {
-    message: 'User created',
-    user: {
+      message: 'User created',
+      user: {
         id: user.id,
         email: user.email,
         organizationId: user.organizationId,
         organization: user.organization,
-    },
-};
+      },
+    };
   }
 
   async login(dto: LoginDto) {
@@ -62,10 +62,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const passwordValid = await bcrypt.compare(
-      dto.password,
-      user.password,
-    );
+    const passwordValid = await bcrypt.compare(dto.password, user.password);
 
     if (!passwordValid) {
       throw new UnauthorizedException('Invalid credentials');

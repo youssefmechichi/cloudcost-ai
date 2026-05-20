@@ -10,12 +10,12 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get("health")
+  @Get('health')
   health() {
-  return {
-    status: "ok",
-    service: "cloudcost-backend",
-    timestamp: new Date().toISOString(),
-  };
-}
+    return {
+      status: 'ok',
+      service: 'cloudcost-backend',
+      timestamp: new Date().toISOString(),
+    };
+  }
 }
