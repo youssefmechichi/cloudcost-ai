@@ -233,14 +233,46 @@ export class BillingService {
 }
 
 async getInsights(userId: string) {
-  const [
+  const summary = await this.getSummary(userId);
+  const monthlyTrends = await this.getMonthlyTrends(userId);
+
+  const user = await this.prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      organization: {
+        include: {
+          subscription: true,
+        },
+      },
+    },
+  });
+
+  const subscription = user?.organization?.subscription;
+
+  const isPro =
+    subscription?.plan === 'PRO' &&
+    subscription?.status === 'ACTIVE';
+
+  if (!isPro) {
+    return {
+      generatedAt: new Date(),
     summary,
     anomalies,
     recommendations,
     forecast,
     monthlyTrends,
-  ] = await Promise.all([
-    this.getSummary(userId),
+      anomalies: [],
+      recommendations: [],
+      forecast: {
+        forecast: 0,
+        confidence: 'LOCKED',
+        reason: 'Forecasting requires a PRO subscription.',
+      },
+      plan: 'FREE',
+    };
+  }
+
+  const [anomalies, recommendations, forecast] = await Promise.all([
     this.getAnomalies(userId),
     this.getRecommendations(userId),
     this.getForecast(userId),
@@ -250,10 +282,11 @@ async getInsights(userId: string) {
   return {
     generatedAt: new Date(),
     summary,
+    monthlyTrends,
     anomalies,
     recommendations,
     forecast,
-    monthlyTrends,
+    plan: 'PRO',
   };
 }
 
