@@ -1,14 +1,15 @@
-import {
-  Controller,
-  Headers,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { StripeService } from './stripe.service';
 import type { RawBodyRequest } from '@nestjs/common';
+
+type AuthenticatedRequest = {
+  user: {
+    userId: string;
+    email: string;
+  };
+};
 
 @Controller('stripe')
 export class StripeController {
@@ -16,7 +17,7 @@ export class StripeController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('checkout')
-  createCheckout(@Req() req) {
+  createCheckout(@Req() req: AuthenticatedRequest) {
     return this.stripeService.createCheckoutSession(req.user.userId);
   }
 
@@ -30,9 +31,7 @@ export class StripeController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('billing-portal')
-  createBillingPortal(@Req() req) {
-    return this.stripeService.createBillingPortal(
-      req.user.userId,
-    );
+  createBillingPortal(@Req() req: AuthenticatedRequest) {
+    return this.stripeService.createBillingPortal(req.user.userId);
   }
 }

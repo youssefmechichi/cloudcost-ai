@@ -8,6 +8,37 @@ import {
   getBillingInsights,
 } from "@/lib/api";
 
+type ServiceCost = {
+  service: string;
+  cost: number;
+};
+
+type Recommendation = {
+  estimatedSavings: number;
+  description: string;
+};
+
+type Insights = {
+  summary: {
+    totalSpend: number;
+    services: ServiceCost[];
+  };
+  monthlyTrends: {
+    month: string;
+    cost: number;
+  }[];
+  anomalies: {
+    service: string;
+    cost: number;
+    currency: string;
+    reason: string;
+  }[];
+  recommendations: Recommendation[];
+  forecast: {
+    forecast: number;
+  };
+};
+
 import {
   LineChart,
   Line,
@@ -26,14 +57,6 @@ type Subscription = {
   status: string;
   canUseAI: boolean;
 };
-
-const chartData = [
-  { month: "Jan", cost: 400 },
-  { month: "Feb", cost: 300 },
-  { month: "Mar", cost: 500 },
-  { month: "Apr", cost: 700 },
-  { month: "May", cost: 600 },
-];
 
 
 function getTokenFromCookies() {
@@ -54,7 +77,7 @@ export default function DashboardPage() {
   const router = useRouter();
 
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [insights, setInsights] = useState<any>(null);
+  const [insights, setInsights] = useState<Insights | null>(null);
 
   useEffect(() => {
     const token = getTokenFromCookies();
@@ -197,7 +220,7 @@ export default function DashboardPage() {
           <h2 className="mt-2 text-2xl font-bold text-slate-950">
           $
           {recommendations
-            .reduce((sum: number, rec: any) => sum + rec.estimatedSavings, 0)
+            .reduce((sum: number, rec: Recommendation) => sum + rec.estimatedSavings, 0)
             .toFixed(0)}
         </h2>
           <p className="text-sm text-green-600">

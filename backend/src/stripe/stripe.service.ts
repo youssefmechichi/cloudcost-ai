@@ -21,7 +21,9 @@ export class StripeService {
     });
 
     if (!user?.organization || !user.organization.subscription) {
-      throw new BadRequestException('User organization or subscription not found');
+      throw new BadRequestException(
+        'User organization or subscription not found',
+      );
     }
 
     const session = await this.stripe.checkout.sessions.create({
@@ -29,7 +31,7 @@ export class StripeService {
       customer_email: user.email,
       line_items: [
         {
-          price: process.env.STRIPE_PRO_PRICE_ID as string,
+          price: process.env.STRIPE_PRO_PRICE_ID,
           quantity: 1,
         },
       ],
@@ -62,7 +64,9 @@ export class StripeService {
         plan: 'PRO',
         status: 'ACTIVE',
         stripeCustomerId:
-          typeof session.customer === 'string' ? session.customer : session.customer?.id,
+          typeof session.customer === 'string'
+            ? session.customer
+            : session.customer?.id,
         stripeSubscriptionId:
           typeof session.subscription === 'string'
             ? session.subscription
@@ -98,49 +102,41 @@ export class StripeService {
     }
 
     if (event.type === 'checkout.session.completed') {
-    await this.handleCheckoutCompleted(
-        event.data.object as Stripe.Checkout.Session,
-    );
+      await this.handleCheckoutCompleted(event.data.object);
     }
 
     if (event.type === 'customer.subscription.deleted') {
-    await this.handleSubscriptionDeleted(
-        event.data.object as Stripe.Subscription,
-    );
+      await this.handleSubscriptionDeleted(event.data.object);
     }
 
     return { received: true };
   }
 
   async createBillingPortal(userId: string) {
-  const user = await this.prisma.user.findUnique({
-    where: { id: userId },
-    include: {
-      organization: {
-        include: {
-          subscription: true,
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        organization: {
+          include: {
+            subscription: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  const customerId =
-    user?.organization?.subscription?.stripeCustomerId;
+    const customerId = user?.organization?.subscription?.stripeCustomerId;
 
-  if (!customerId) {
-    throw new BadRequestException(
-      "No Stripe customer found.",
-    );
-  }
+    if (!customerId) {
+      throw new BadRequestException('No Stripe customer found.');
+    }
 
-  const session =
-    await this.stripe.billingPortal.sessions.create({
+    const session = await this.stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${process.env.FRONTEND_URL}/pricing`,
     });
 
-  return {
-    url: session.url,
-  };
-}
+    return {
+      url: session.url,
+    };
+  }
 }
