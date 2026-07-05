@@ -37,10 +37,12 @@ Thumbs.db
 # coverage
 coverage/
 
-# terraform
-*.tfstate
-*.tfstate.backup
+# Terraform
 .terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+crash.log
 
 # misc
 tmp/
