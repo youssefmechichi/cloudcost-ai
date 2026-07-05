@@ -1,0 +1,23 @@
+flowchart TD
+
+A[Terraform]
+
+B[Bootstrap Environment]
+
+C[Resource Group]
+
+D[Storage Account]
+
+E[Blob Container]
+
+F[Remote Terraform State]
+
+A --> B
+
+B --> C
+
+C --> D
+
+D --> E
+
+E --> F
