@@ -11,5 +11,15 @@ module "network" {
   subnet_prefixes     = local.subnet_prefixes
 }
 
+module "acr" {
+  source = "../../modules/acr"
+
+  resource_group_name = data.azurerm_resource_group.bootstrap.name
+  location            = data.azurerm_resource_group.bootstrap.location
+
+  acr_name      = local.acr_name
+  sku           = "Basic"
+  admin_enabled = false
+}
 
 
