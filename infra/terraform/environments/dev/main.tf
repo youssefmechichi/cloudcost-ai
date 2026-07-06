@@ -22,4 +22,20 @@ module "acr" {
   admin_enabled = false
 }
 
+module "aks" {
+  source = "../../modules/aks"
+
+  resource_group_name = data.azurerm_resource_group.bootstrap.name
+  location            = data.azurerm_resource_group.bootstrap.location
+
+  cluster_name       = local.cluster_name
+  dns_prefix         = local.dns_prefix
+  kubernetes_version = local.kubernetes_version
+
+  node_count = local.node_count
+  vm_size    = local.vm_size
+
+  subnet_id = module.network.subnet_ids["aks"]
+}
+
 
