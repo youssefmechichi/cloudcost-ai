@@ -17,4 +17,15 @@ locals {
   }
 
   acr_name = "cloudcostaiyoussefdev"
+
+  cluster_name = "cloudcost-ai-dev-aks"
+
+  dns_prefix = "cloudcost-ai-dev"
+
+  kubernetes_version = "1.33"
+
+  node_count = 2
+
+  vm_size = "Standard_FX2ms_v2"
+
 }
