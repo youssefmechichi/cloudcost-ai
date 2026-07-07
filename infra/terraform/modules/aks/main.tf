@@ -9,6 +9,10 @@ resource "azurerm_kubernetes_cluster" "this" {
     node_count     = var.node_count
     vm_size        = var.vm_size
     vnet_subnet_id = var.subnet_id
+
+    upgrade_settings {
+    max_surge = "10%"
+  }
   }
 
   network_profile {

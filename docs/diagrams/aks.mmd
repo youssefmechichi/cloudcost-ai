@@ -1,0 +1,17 @@
+flowchart LR
+
+Terraform --> AKS
+
+AKS --> VMSS
+
+VMSS --> Node1["Worker Node 1"]
+VMSS --> Node2["Worker Node 2"]
+
+Node1 --> Pods1["System Pods"]
+Node2 --> Pods2["Application Pods"]
+
+AKS --> VNet
+
+AKS --> ManagedIdentity
+
+ManagedIdentity --> ACR
