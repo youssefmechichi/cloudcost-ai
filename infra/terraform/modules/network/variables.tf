@@ -18,8 +18,15 @@ variable "address_space" {
     type        = list(string)
 }
 
-variable "subnet_prefixes" {
-  description = "CIDR blocks for the subnets"
+variable "subnets" {
+  description = "Subnet configuration"
 
-  type = map(string)
+  type = map(object({
+    address_prefix = string
+
+    delegation = optional(object({
+      name         = string
+      service_name = string
+    }))
+  }))
 }
