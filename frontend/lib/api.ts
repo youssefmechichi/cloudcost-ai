@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export async function signup(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/signup`, {
@@ -51,7 +51,7 @@ export async function getMySubscription(token: string) {
 
 export async function getBillingSummary(token: string) {
   const response = await fetch(
-    "http://localhost:3000/billing/summary",
+    `${API_URL}/billing/summary`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ export async function getBillingSummary(token: string) {
 
 export async function getBillingRecords(token: string) {
   const response = await fetch(
-    "http://localhost:3000/billing/records",
+    `${API_URL}/billing/records`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ export async function uploadBillingCsv(token: string, file: File) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("http://localhost:3000/billing/upload", {
+  const response = await fetch(`${API_URL}/billing/upload`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -105,7 +105,7 @@ export async function uploadBillingCsv(token: string, file: File) {
 }
 
 export async function getMonthlyTrends(token: string) {
-  const response = await fetch("http://localhost:3000/billing/monthly-trends", {
+  const response = await fetch(`${API_URL}/billing/monthly-trends`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -119,7 +119,7 @@ export async function getMonthlyTrends(token: string) {
 }
 
 export async function getBillingAnomalies(token: string) {
-  const response = await fetch("http://localhost:3000/billing/anomalies", {
+  const response = await fetch(`${API_URL}/billing/anomalies`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -133,7 +133,7 @@ export async function getBillingAnomalies(token: string) {
 }
 
 export async function getBillingRecommendations(token: string) {
-  const response = await fetch("http://localhost:3000/billing/recommendations", {
+  const response = await fetch(`${API_URL}/billing/recommendations`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -147,7 +147,7 @@ export async function getBillingRecommendations(token: string) {
 }
 
 export async function getBillingInsights(token: string) {
-  const response = await fetch("http://localhost:3000/billing/insights", {
+  const response = await fetch(`${API_URL}/billing/insights`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -165,7 +165,7 @@ export async function askAiAdvisor(
   message: string,
 ) {
   const response = await fetch(
-    "http://localhost:3000/billing/ai-chat",
+    `${API_URL}/billing/ai-chat`,
     {
       method: "POST",
       headers: {
@@ -184,7 +184,7 @@ export async function askAiAdvisor(
 }
 
 export async function createStripeCheckout(token: string) {
-  const response = await fetch("http://localhost:3000/stripe/checkout", {
+  const response = await fetch(`${API_URL}/stripe/checkout`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -202,7 +202,7 @@ export async function createBillingPortal(
   token: string,
 ) {
   const response = await fetch(
-    "http://localhost:3000/stripe/billing-portal",
+    `${API_URL}/stripe/billing-portal`,
     {
       method: "POST",
       headers: {
