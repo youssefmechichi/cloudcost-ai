@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: cloudcost-ai-frontend-service
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: cloudcost-ai-frontend
+
+  ports:
+    - port: 80
+      targetPort: 3001
