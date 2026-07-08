@@ -1,0 +1,22 @@
+apiVersion : apps/v1
+kind : Deployment
+metadata:
+  name: cloudcost-ai-frontend
+spec:
+  replicas : 2
+  selector: 
+    matchLabels:
+      app: cloudcost-ai-frontend
+  template:
+    metadata:
+      labels:
+        app: cloudcost-ai-frontend
+    spec:
+      containers:
+      - name: cloudcost-ai-frontend
+        image: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-frontend:latest
+        ports:
+        - containerPort: 3001
+        envFrom:
+          - configMapRef:
+              name: cloudcost-ai-frontend-config

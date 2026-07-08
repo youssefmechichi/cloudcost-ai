@@ -43,7 +43,11 @@ coverage/
 *.tfstate.*
 tfplan
 crash.log
+*.tfvars
 
 # misc
 tmp/
 temp/
+
+#SECRETS
+k8s/backend/secret.yaml

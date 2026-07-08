@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: cloudcost-ai-backend
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloudcost-ai-backend
+  template:
+    metadata:
+      labels:
+        app: cloudcost-ai-backend
+    spec:
+      containers:
+      - name: cloudcost-ai-backend
+        image: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-backend:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: cloudcost-ai-backend-config
+          - secretRef:
+              name: cloudcost-ai-backend-secret
