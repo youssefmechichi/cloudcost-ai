@@ -17,6 +17,4 @@ spec:
         image: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-frontend:latest
         ports:
         - containerPort: 3001
-        envFrom:
-          - configMapRef:
-              name: cloudcost-ai-frontend-config
+        

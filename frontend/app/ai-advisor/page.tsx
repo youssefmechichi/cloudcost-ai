@@ -48,7 +48,7 @@ export default function AiAdvisorPage() {
     const token = getTokenFromCookies();
 
     if (!token) {
-      router.push("/login");
+      router.push("/");
       return;
     }
 
@@ -56,7 +56,7 @@ export default function AiAdvisorPage() {
       .then(setInsights)
       .catch(() => {
         document.cookie = "token=; Max-Age=0; path=/";
-        router.push("/login");
+        router.push("/");
       })
       .finally(() => setIsLoading(false));
   }, [router]);

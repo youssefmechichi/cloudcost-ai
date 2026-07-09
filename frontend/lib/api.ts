@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_URL = "/api";
 
 export async function signup(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/signup`, {
@@ -10,7 +10,9 @@ export async function signup(email: string, password: string) {
   });
 
   if (!res.ok) {
-    throw new Error("Signup failed");
+     const body = await res.json().catch(() => null);
+
+    throw new Error(body?.message ?? "Signup failed");
   }
 
   return res.json();

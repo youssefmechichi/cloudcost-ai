@@ -17,15 +17,21 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
-    try {
-      setLoading(true);
-      await signup(email, password);
-      router.push("/login");
-    } catch {
-      setError("Signup failed. This email may already exist.");
-    } finally {
-      setLoading(false);
+  try {
+    setLoading(true);
+    await signup(email, password);
+    router.push("/");
+  } catch (err) {
+    console.error(err);
+
+    if (err instanceof Error) {
+      setError(err.message);
+    } else {
+      setError("Unknown error");
     }
+  } finally {
+    setLoading(false);
+  }
   }
 
   return (
@@ -70,7 +76,7 @@ export default function SignupPage() {
 
         <p className="text-center text-sm text-slate-500">
           Already have an account?{" "}
-          <Link href="/login" className="text-indigo-600 underline">
+          <Link href="/" className="text-indigo-600 underline">
             Login
           </Link>
         </p>
