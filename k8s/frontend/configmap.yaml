@@ -3,6 +3,3 @@ kind: ConfigMap
 
 metadata:
   name: cloudcost-ai-frontend-config
-
-data:
-  NEXT_PUBLIC_API_URL: "/api"

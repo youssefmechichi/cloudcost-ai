@@ -35,7 +35,7 @@ export default function BillingPage() {
     const token = getTokenFromCookies();
 
     if (!token) {
-      router.push("/login");
+      router.push("/");
       return;
     }
 
@@ -43,7 +43,7 @@ export default function BillingPage() {
       .then(setRecords)
       .catch(() => {
         document.cookie = "token=; Max-Age=0; path=/";
-        router.push("/login");
+        router.push("/");
       });
   }, [router]);
 
