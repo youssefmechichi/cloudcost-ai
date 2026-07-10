@@ -50,4 +50,4 @@ tmp/
 temp/
 
 #SECRETS
-k8s/backend/secret.yaml
+k8s/base/backend/secret.yaml

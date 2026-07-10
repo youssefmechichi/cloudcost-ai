@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cloudcost-ai-backend
-        image: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-backend:latest
+        image: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-backend
         ports:
         - containerPort: 3000
         envFrom:
