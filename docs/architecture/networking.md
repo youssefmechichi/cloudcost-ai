@@ -21,7 +21,7 @@ Terraform dynamically provisions networking resources using reusable modules.
 - location
 - vnet_name
 - address_space
-- subnet_prefixes
+- subnets
 
 ### Outputs
 

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: cloudcost-ai-frontend
-        image: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-frontend:latest
+        image: youssefcloudcostaidev.azurecr.io/cloudcost-ai-frontend:bootstrap
         ports:
         - containerPort: 3001
         
