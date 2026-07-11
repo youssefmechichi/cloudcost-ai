@@ -8,7 +8,7 @@ resources:
 
 images:
   - name: youssefcloudcostaidev.azurecr.io/cloudcost-ai-backend
-    newTag: bootstrap
+    newTag: 9147844
 
   - name: youssefcloudcostaidev.azurecr.io/cloudcost-ai-frontend
-    newTag: bootstrap
+    newTag: 9147844
