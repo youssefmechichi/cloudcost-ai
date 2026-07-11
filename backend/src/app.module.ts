@@ -7,9 +7,12 @@ import { AuthModule } from './auth/auth.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { BillingModule } from './billing/billing.module';
 import { StripeModule } from './stripe/stripe.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
+    PrometheusModule.register(),
+
     PrismaModule,
     UsersModule,
     AuthModule,
