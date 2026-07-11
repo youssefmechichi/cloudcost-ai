@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 env:
-  ACR_NAME: cloudcostaiyoussefdev
-  REGISTRY: cloudcostaiyoussefdev.azurecr.io
+  ACR_NAME: cloudcostaidev
+  REGISTRY: youssefcloudcostaidev.azurecr.io
 
   BACKEND_IMAGE: cloudcost-ai-backend
   FRONTEND_IMAGE: cloudcost-ai-frontend

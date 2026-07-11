@@ -2,7 +2,7 @@ locals {
   project     = "cloudcost-ai"
   environment = "dev"
 
-  location = "France Central"
+  location = "Poland Central"
 
   resource_group_name = "${local.project}-${local.environment}-rg"
 
@@ -29,7 +29,7 @@ locals {
     }
   }
 
-  acr_name = "cloudcostaiyoussefdev"
+  acr_name = "youssefcloudcostaidev"
 
   cluster_name = "cloudcost-ai-dev-aks"
 
@@ -39,9 +39,9 @@ locals {
 
   node_count = 2
 
-  vm_size = "Standard_FX2ms_v2"
+  vm_size = "Standard_B2as_v2"
 
-  postgres_server_name = "cloudcost-ai-dev-postgres"
+  postgres_server_name = "cloudcost-ai-dev-postgres-ym"
 
   postgres_database_name = "cloudcost_ai"
 

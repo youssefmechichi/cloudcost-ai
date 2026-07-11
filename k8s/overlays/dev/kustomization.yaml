@@ -7,8 +7,8 @@ resources:
   - ../../base
 
 images:
-  - name: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-backend
-    newTag: latest
+  - name: youssefcloudcostaidev.azurecr.io/cloudcost-ai-backend
+    newTag: bootstrap
 
-  - name: cloudcostaiyoussefdev.azurecr.io/cloudcost-ai-frontend
-    newTag: latest
+  - name: youssefcloudcostaidev.azurecr.io/cloudcost-ai-frontend
+    newTag: bootstrap
