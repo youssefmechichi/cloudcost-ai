@@ -5,6 +5,13 @@ metadata:
   name: cloudcost-ai-backend
 
 spec:
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   replicas: 2
   selector:
     matchLabels:
@@ -19,6 +26,36 @@ spec:
         image: youssefcloudcostaidev.azurecr.io/cloudcost-ai-backend:bootstrap
         ports:
         - containerPort: 3000
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+
         envFrom:
           - configMapRef:
               name: cloudcost-ai-backend-config
