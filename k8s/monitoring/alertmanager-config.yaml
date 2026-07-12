@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+
+metadata:
+  name: cloudcost-ai-alertmanager
+  namespace: monitoring
+
+  labels:
+    release: monitoring
+
+spec:
+  route:
+    receiver: slack
+
+  receivers:
+    - name: slack
+
+      slackConfigs:
+        - apiURL:
+            name: slack-webhook
+            key: url
+
+          channel: " #all-cloudcost"
+
+          title: "{{ .Status | toUpper }} - {{ .CommonLabels.alertname }}"
+
+          text: |
+            *Alert:* {{ .CommonLabels.alertname }}
+            *Severity:* {{ .CommonLabels.severity }}
+            *Namespace:* {{ .CommonLabels.namespace }}
+
+            {{ range .Alerts }}
+            • {{ .Annotations.summary }}
+            {{ end }}
+
+          sendResolved: true

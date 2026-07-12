@@ -51,3 +51,4 @@ temp/
 
 #SECRETS
 k8s/base/backend/secret.yaml
+k8s/monitoring/slack-secret.yaml
