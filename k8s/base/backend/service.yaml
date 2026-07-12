@@ -4,6 +4,9 @@ kind: Service
 metadata:
   name: cloudcost-ai-backend-service
 
+  labels:
+    app: cloudcost-ai-backend
+
 spec:
   type: ClusterIP
 
@@ -11,5 +14,6 @@ spec:
     app: cloudcost-ai-backend
 
   ports:
-    - port: 80
+    - name: http
+      port: 80
       targetPort: 3000
