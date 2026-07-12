@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+
+metadata:
+  name: cloudcost-ai-rules
+  namespace: monitoring
+
+  labels:
+    release: monitoring
+
+spec:
+  groups:
+    - name: cloudcost-ai
+
+      rules:
+
+        - alert: CloudCostBackendDown
+
+          expr: up{service="cloudcost-ai-backend-service"} == 0
+
+          for: 1m
+
+          labels:
+            severity: critical
+
+          annotations:
+            summary: CloudCost AI backend is down
+            description: Backend metrics endpoint is unreachable for more than 1 minute.
