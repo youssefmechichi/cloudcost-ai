@@ -6,7 +6,7 @@
 - ✅ Azure networking
 - ✅ Azure Container Registry
 - ✅ AKS
-- ⏳ PostgreSQL
-- ⏳ Azure Key Vault
+- ✅ PostgreSQL
+- ✅ Monitoring
+- ✅ GitHub Actions
 - ⏳ Azure OpenAI
-- ⏳ GitHub Actions
