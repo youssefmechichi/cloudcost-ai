@@ -8,11 +8,12 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { BillingModule } from './billing/billing.module';
 import { StripeModule } from './stripe/stripe.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
     PrometheusModule.register(),
-
+    AiModule,
     PrismaModule,
     UsersModule,
     AuthModule,
